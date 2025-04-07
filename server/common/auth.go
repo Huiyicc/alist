@@ -6,7 +6,7 @@ import (
 	"github.com/Xhofe/go-cache"
 	"github.com/alist-org/alist/v3/internal/conf"
 	"github.com/alist-org/alist/v3/internal/model"
-	"github.com/golang-jwt/jwt/v4"
+	"github.com/golang-jwt/jwt/v5"
 	"github.com/pkg/errors"
 )
 
@@ -46,17 +46,7 @@ func ParseToken(tokenString string) (*UserClaims, error) {
 		return nil, errors.New("token is invalidated")
 	}
 	if err != nil {
-		if ve, ok := err.(*jwt.ValidationError); ok {
-			if ve.Errors&jwt.ValidationErrorMalformed != 0 {
-				return nil, errors.New("that's not even a token")
-			} else if ve.Errors&jwt.ValidationErrorExpired != 0 {
-				return nil, errors.New("token is expired")
-			} else if ve.Errors&jwt.ValidationErrorNotValidYet != 0 {
-				return nil, errors.New("token not active yet")
-			} else {
-				return nil, errors.New("couldn't handle this token")
-			}
-		}
+		return nil, err
 	}
 	if claims, ok := token.Claims.(*UserClaims); ok && token.Valid {
 		return claims, nil
