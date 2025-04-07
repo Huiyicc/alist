@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"net/http/cookiejar"
 	"net/url"
+	"time"
 
 	"github.com/alist-org/alist/v3/pkg/utils"
 )
@@ -36,8 +37,11 @@ func New(webuiUrl string) (Client, error) {
 		return nil, err
 	}
 	var c = &client{
-		url:    u,
-		client: http.Client{Jar: jar},
+		url: u,
+		client: http.Client{
+			Jar:     jar,
+			Timeout: 10 * time.Second,
+		},
 	}
 
 	err = c.checkAuthorization()
